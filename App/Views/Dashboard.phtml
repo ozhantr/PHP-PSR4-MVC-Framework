@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <title>PSR4 MVC Test Page</title>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+  <link rel="stylesheet" href="<?=ASSETS; ?>/css/main.css">
+
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+
+  <div class="container">
+    <h1>Dashboard</h1>
+
+
+    <div class="row">
+      <div class="col-lg-3 col-xs-6">
+        <!-- small box -->
+        <div class="small-box bg-aqua">
+          <div class="inner">
+            <h3>
+              <?=$data['total_order']; ?>
+            </h3>
+
+            <p>Total Order</p>
+          </div>
+          <div class="icon">
+            <i class="ion ion-bag"></i>
+          </div>
+        </div>
+      </div>
+      <!-- ./col -->
+      <div class="col-lg-3 col-xs-6">
+        <!-- small box -->
+        <div class="small-box bg-green">
+          <div class="inner">
+            <h3>&euro;
+              <?=$data['total_revenue']; ?>
+            </h3>
+            <p>Total Revenue</p>
+          </div>
+          <div class="icon">
+            <i class="ion ion-stats-bars"></i>
+          </div>
+        </div>
+      </div>
+      <!-- ./col -->
+      <div class="col-lg-3 col-xs-6">
+        <!-- small box -->
+        <div class="small-box bg-yellow">
+          <div class="inner">
+            <h3>
+              <?=$data['total_customer']; ?>
+            </h3>
+
+            <p>Total Customer</p>
+          </div>
+          <div class="icon">
+            <i class="ion ion-person-add"></i>
+          </div>
+        </div>
+      </div>
+      <!-- ./col -->
+      <div class="col-lg-3 col-xs-6">
+        <!-- small box -->
+        <div class="small-box bg-red">
+          <div class="inner">
+            <h3>
+              <?=$data['total_order_item']; ?>
+            </h3>
+
+            <p>Total Order Item</p>
+          </div>
+          <div class="icon">
+            <i class="ion ion-pie-graph"></i>
+          </div>
+        </div>
+      </div>
+      <!-- ./col -->
+    </div>
+
+    <div class="col-md-12 box box-primary">
+
+      <div class="box-header">
+        <h3 class="box-title">Date range:</h3>
+      </div>
+
+      <div class="form-group">
+        <div class="input-group">
+          <div class="input-group-addon">
+            <i class="fa fa-calendar"></i>
+          </div>
+          <input type="text" class="form-control pull-right" id="datepicker">
+        </div>
+      </div>
+    </div>
+
+    <div id="chart" style="height: 250px;"></div>
+
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+
+  <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+  <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+  <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css">
+
+  <script type="text/javascript">
+    var chart = Morris.Line({
+      element: 'chart',
+      xkey: 'date',
+      ykeys: ['customer', 'order'],
+      labels: ['New Customer', 'Order'],
+      lineColors: ['#F39C12', '#DD4B39']
+    });
+
+    function chartLine(startDate, endDate) {
+      $.ajax({
+          type: "GET",
+          dataType: 'json',
+          url: "/psr4/public/home/chart-data/" + startDate + "/" + endDate,
+          data: {
+            "days": "days"
+          }
+        })
+        .done(function(data) {
+          console.dir(data);
+          chart.setData(data.data);
+        })
+        .fail(function(data) {
+          console.log(data);
+          console.log("Error occured.");
+        });
+    }
+
+    $('#datepicker').daterangepicker({
+        "startDate": moment().subtract(30, 'days'),
+        "endDate": moment()
+      },
+      function(start, end) {
+        startDate = start.format('YYYY-MM-DD');
+        endDate = end.format('YYYY-MM-DD');
+        chartLine(startDate, endDate);
+      }
+    );
+
+    $(document).ready(function() {
+      var date = new Date();
+      var startDate = moment(date).subtract(30, 'days').format('YYYY-MM-DD');
+      var endDate = moment(date).format('YYYY-MM-DD');
+      chartLine(startDate, endDate);
+    });
+  </script>
+
+</body>
+
+</html>

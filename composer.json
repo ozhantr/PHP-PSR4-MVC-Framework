@@ -1,0 +1,22 @@
+{
+    "name": "ozhan/mvc",
+    "description": "PSR4 MVC Framework v1.0.0",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Ozhan Duran",
+            "email": "ozhantr@hotmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.6.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "App/",
+            "Core\\": "Core/",
+            "Model\\": "App/Models/",
+            "Controller\\": "App/Controllers/"
+        }
+    }
+}
